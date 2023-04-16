@@ -273,7 +273,7 @@ target_compile_definitions(${TARGET} PUBLIC
 
 if (MINGW)
     target_link_libraries(${TARGET} PUBLIC
-        stdc++
+        std:c++latest
         )
 endif()
 
