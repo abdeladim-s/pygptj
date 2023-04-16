@@ -19,7 +19,6 @@
 #include <string>
 #include <vector>
 #include <iostream>
-#include <unistd.h>
 
 #include <pybind11/pybind11.h>
 namespace py = pybind11;
