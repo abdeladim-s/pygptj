@@ -206,9 +206,9 @@ bool gptj_model_load(const std::string & fname, gptj_model & model, gpt_vocab & 
     // create the ggml context
     {
         struct ggml_init_params params = {
-            .mem_size   = ctx_size,
-            .mem_buffer = NULL,
-            .no_alloc   = false,
+            ctx_size, //.mem_size   =
+            NULL, //.mem_buffer =
+            false, //.no_alloc   =
         };
 
         model.ctx = ggml_init(params);
@@ -446,13 +446,14 @@ bool gptj_eval(
     }
 
     struct ggml_init_params params = {
-        .mem_size   = buf_size,
-        .mem_buffer = buf,
-        .no_alloc   = false,
+        buf_size, //.mem_size   =
+        buf, //.mem_buffer =
+        false, //.no_alloc   =
     };
 
     struct ggml_context * ctx0 = ggml_init(params);
-    struct ggml_cgraph gf = { .n_threads = n_threads };
+    struct ggml_cgraph gf = {};
+    gf.n_threads = n_threads;
 
     struct ggml_tensor * embd = ggml_new_tensor_1d(ctx0, GGML_TYPE_I32, N);
     memcpy(embd->data, embd_inp.data(), N*ggml_element_size(embd));
@@ -648,16 +649,16 @@ int gptj_generate(gpt_params params, gptj_model model, gpt_vocab vocab,  py::fun
     printf("%s: seed = %d\n", __func__, params.seed);
 
     std::mt19937 rng(params.seed);
-    if (params.prompt.empty()) {
-        if( !isatty(STDIN_FILENO) ){
-            std::string line;
-            while( std::getline(std::cin, line) ){
-                params.prompt = params.prompt + "\n" + line;
-            }
-        } else {
-            params.prompt = gpt_random_prompt(rng);
-        }
-    }
+//    if (params.prompt.empty()) {
+//        if( !isatty(STDIN_FILENO) ){
+//            std::string line;
+//            while( std::getline(std::cin, line) ){
+//                params.prompt = params.prompt + "\n" + line;
+//            }
+//        } else {
+//            params.prompt = gpt_random_prompt(rng);
+//        }
+//    }
 
     int64_t t_load_us = 0;
 

@@ -68,6 +68,8 @@ endif()
 set(CMAKE_C_STANDARD   11)
 set(CMAKE_CXX_STANDARD 11)
 
+# SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
+
 find_package(Threads REQUIRED)
 
 # main
@@ -273,7 +275,7 @@ target_compile_definitions(${TARGET} PUBLIC
 
 if (MINGW)
     target_link_libraries(${TARGET} PUBLIC
-        std:c++20
+        std:c++
         )
 endif()
 
