@@ -14,7 +14,7 @@ def main():
     vocab = pp.gpt_vocab()
     pp.gptj_model_load(model_path, model, vocab)
     # gnerate
-    params = pp.gpt_params()
+    params = pp.gptj_gpt_params()
     params.prompt = "Hi, "
     params.n_predict = 55
     # tokens = pp.gpt_tokenize(vocab, "hey you!")

@@ -40,7 +40,7 @@ PYBIND11_MODULE(_pygptj, m) {
 
     )pbdoc";
 
-    py::class_<gpt_params>(m,"gpt_params" /*,py::dynamic_attr()*/)
+    py::class_<gpt_params>(m,"gptj_gpt_params" /*,py::dynamic_attr()*/)
         .def(py::init<>())
         .def_readwrite("seed", &gpt_params::seed)
         .def_readwrite("n_threads", &gpt_params::n_threads)

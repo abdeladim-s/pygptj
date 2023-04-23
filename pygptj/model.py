@@ -60,7 +60,7 @@ class Model:
         self._load_model()
 
         # gpt params
-        self.gpt_params = pp.gpt_params()
+        self.gpt_params = pp.gptj_gpt_params()
 
         self.res = ""
 
