@@ -7,8 +7,8 @@
  ********************************************************************************
  */
 
-#include "ggml.h"
 #include "utils.h"
+#include "gptj.h"
 
 #include <cassert>
 #include <cmath>
@@ -23,59 +23,6 @@
 #include <pybind11/pybind11.h>
 namespace py = pybind11;
 
-// default hparams (GPT-J 6B)
-struct gptj_hparams {
-    int32_t n_vocab = 50400;
-    int32_t n_ctx   = 2048;
-    int32_t n_embd  = 4096;
-    int32_t n_head  = 16;
-    int32_t n_layer = 28;
-    int32_t n_rot   = 64;
-    int32_t f16     = 1;
-};
-
-struct gptj_layer {
-    // normalization
-    struct ggml_tensor * ln_1_g;
-    struct ggml_tensor * ln_1_b;
-
-    // attention
-    struct ggml_tensor * c_attn_q_proj_w;
-    struct ggml_tensor * c_attn_k_proj_w;
-    struct ggml_tensor * c_attn_v_proj_w;
-
-    struct ggml_tensor * c_attn_proj_w;
-
-    // ff
-    struct ggml_tensor * c_mlp_fc_w;
-    struct ggml_tensor * c_mlp_fc_b;
-
-    struct ggml_tensor * c_mlp_proj_w;
-    struct ggml_tensor * c_mlp_proj_b;
-};
-
-struct gptj_model {
-    gptj_hparams hparams;
-
-    // normalization
-    struct ggml_tensor * ln_f_g;
-    struct ggml_tensor * ln_f_b;
-
-    struct ggml_tensor * wte; // position embedding
-
-    struct ggml_tensor * lmh_g; // language model head
-    struct ggml_tensor * lmh_b; // language model bias
-
-    std::vector<gptj_layer> layers;
-
-    // key + value memory
-    struct ggml_tensor * memory_k;
-    struct ggml_tensor * memory_v;
-
-    //
-    struct ggml_context * ctx;
-    std::map<std::string, struct ggml_tensor *> tensors;
-};
 
 // load the model's weights from a file
 bool gptj_model_load(const std::string & fname, gptj_model & model, gpt_vocab & vocab) {
@@ -662,9 +609,6 @@ int gptj_generate(gpt_params params, gptj_model model, gpt_vocab vocab,  py::fun
 
     int64_t t_load_us = 0;
 
-
-
-
     // load the model
 //    {
 //        const int64_t t_start_us = ggml_time_us();
@@ -685,7 +629,7 @@ int gptj_generate(gpt_params params, gptj_model model, gpt_vocab vocab,  py::fun
     std::vector<float> logits;
 
     // tokenize the prompt
-    std::vector<gpt_vocab::id> embd_inp = ::gpt_tokenize(vocab, params.prompt);
+    std::vector<gpt_vocab::id> embd_inp = gpt_tokenize(vocab, params.prompt);
 
     params.n_predict = std::min(params.n_predict, model.hparams.n_ctx - (int) embd_inp.size());
 
@@ -747,8 +691,7 @@ int gptj_generate(gpt_params params, gptj_model model, gpt_vocab vocab,  py::fun
 
         // display text
         for (auto id : embd) {
-            new_text_callback(vocab.id_to_token[id].c_str());
-//            printf("%s", vocab.id_to_token[id].c_str());
+            new_text_callback(py::str(vocab.id_to_token[id].c_str()));
         }
         fflush(stdout);
 

@@ -14,8 +14,8 @@
 #include <pybind11/functional.h>
 #include <pybind11/numpy.h>
 
-#include "utils.cpp"
-#include "gptj.cpp"
+#include "utils.h"
+#include "gptj.h"
 #include "main.h"
 
 
@@ -50,7 +50,9 @@ PYBIND11_MODULE(_pygptj, m) {
         .def_readwrite("temp", &gpt_params::temp)
         .def_readwrite("n_batch", &gpt_params::n_batch)
         .def_readwrite("model", &gpt_params::model)
-        .def_readwrite("prompt", &gpt_params::prompt)
+//        .def_readwrite("prompt", &gpt_params::prompt)
+        .def_property("prompt", [](gpt_params &self) {return py::str(self.prompt);},
+                                 [](gpt_params &self, py::str &prompt) {self.prompt = prompt.cast<std::string>();})
         ;
 
     py::class_<gptj_hparams>(m,"gptj_hparams" /*,py::dynamic_attr()*/)
