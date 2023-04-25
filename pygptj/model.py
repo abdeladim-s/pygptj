@@ -71,15 +71,19 @@ class Model:
         pp.gptj_model_load(self.model_path, self._model, self._vocab)
 
 
-    def _call_new_text_callback(self, text) -> None:
+    def _call_new_text_callback(self, text_bytes) -> None:
         """
         Internal new_segment_callback, it just calls the user's callback with the `Segment` object
         :return: None
         """
         if Model._new_text_callback is not None:
-            Model._new_text_callback(text)
+            try:
+                text = text_bytes.decode("utf-8")
+                Model._new_text_callback(text)
+                self.res += text
+            except UnicodeDecodeError:
+                logging.warning(f"UnicodeDecodeError of bytes {text_bytes}")
         # save res
-        self.res += text
 
     def generate(self,
                  prompt: str,

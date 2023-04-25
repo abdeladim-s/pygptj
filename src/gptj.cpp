@@ -25,7 +25,7 @@ namespace py = pybind11;
 
 
 // load the model's weights from a file
-bool gptj_model_load(const std::string & fname, gptj_model & model, gpt_vocab & vocab) {
+bool gptj_model_load(const std::string & fname, struct gptj_model & model, struct gpt_vocab & vocab) {
     printf("%s: loading model from '%s' - please wait ...\n", __func__, fname.c_str());
 
     auto fin = std::ifstream(fname, std::ios::binary);
@@ -342,6 +342,18 @@ bool gptj_model_load(const std::string & fname, gptj_model & model, gpt_vocab & 
     return true;
 }
 
+struct gptj_context gptj_load_model_ctx(const std::string & fname) {
+    struct gptj_context context;
+    auto model = context.model;
+    auto vocab = context.vocab;
+    if(gptj_model_load(fname, model, vocab)){
+        return context;
+    }
+    else{
+        fprintf(stderr, "%s: failed to load model from '%s'\n", __func__, fname.c_str());
+    }
+}
+
 void gptj_free(struct gptj_model * model){
     ggml_free(model->ctx);
 }
@@ -583,7 +595,10 @@ bool gptj_eval(
     return true;
 }
 
-int gptj_generate(gpt_params params, gptj_model model, gpt_vocab vocab,  py::function new_text_callback) {
+int gptj_generate(gpt_params params, struct gptj_model & model, struct gpt_vocab & vocab,  py::function new_text_callback) {
+//    auto model = context->model;
+//    auto vocab = context->vocab;
+
     const int64_t t_main_start_us = ggml_time_us();
 
     params.model = "models/gpt-j-6B/ggml-model.bin";
@@ -691,7 +706,8 @@ int gptj_generate(gpt_params params, gptj_model model, gpt_vocab vocab,  py::fun
 
         // display text
         for (auto id : embd) {
-            new_text_callback(vocab.id_to_token[id].c_str());
+            py::bytes bytes = py::bytes(vocab.id_to_token[id].c_str());
+            new_text_callback(bytes);
         }
         fflush(stdout);
 

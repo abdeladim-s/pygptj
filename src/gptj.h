@@ -66,7 +66,14 @@ struct gptj_model {
     std::map<std::string, struct ggml_tensor *> tensors;
 };
 
-bool gptj_model_load(const std::string & fname, gptj_model & model, gpt_vocab & vocab);
+struct gptj_context {
+     struct gptj_model model;
+     struct gpt_vocab vocab;
+};
+
+bool gptj_model_load(const std::string & fname,  struct gptj_model & model, struct gpt_vocab & vocab);
+
+struct gptj_context gptj_load_model_ctx(const std::string & fname);
 
 void gptj_free(struct gptj_model * model);
 
@@ -78,4 +85,4 @@ bool gptj_eval(
               std::vector<float>         & embd_w,
               size_t                     & mem_per_token);
 
-int gptj_generate(gpt_params params, gptj_model model, gpt_vocab vocab, py::function new_text_callback);
+int gptj_generate(gpt_params params, struct gptj_model & model, struct gpt_vocab & vocab, py::function new_text_callback);

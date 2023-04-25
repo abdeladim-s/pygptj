@@ -13,6 +13,7 @@
 #include <pybind11/stl.h>
 #include <pybind11/functional.h>
 #include <pybind11/numpy.h>
+#include <map>
 
 #include "utils.h"
 #include "gptj.h"
@@ -59,11 +60,17 @@ PYBIND11_MODULE(_pygptj, m) {
     py::class_<gptj_model>(m,"gptj_model" /*,py::dynamic_attr()*/)
         .def(py::init<>())
     ;
+
  py::class_<gpt_vocab>(m,"gpt_vocab" /*,py::dynamic_attr()*/)
         .def(py::init<>())
     ;
 
+py::class_<gptj_context>(m,"gptj_context" /*,py::dynamic_attr()*/)
+;
+
     m.def("gptj_model_load", &gptj_model_load);
+    m.def("gptj_load_model_ctx", &gptj_load_model_ctx);
+
     m.def("gptj_eval", &gptj_eval);
     m.def("gptj_free", &gptj_free);
     m.def("gpt_sample_top_k_top_p", &gpt_sample_top_k_top_p);
