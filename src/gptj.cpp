@@ -691,7 +691,7 @@ int gptj_generate(gpt_params params, gptj_model model, gpt_vocab vocab,  py::fun
 
         // display text
         for (auto id : embd) {
-            new_text_callback(py::str(vocab.id_to_token[id].c_str()));
+            new_text_callback(vocab.id_to_token[id].c_str());
         }
         fflush(stdout);
 

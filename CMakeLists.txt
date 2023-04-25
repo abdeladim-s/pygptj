@@ -11,7 +11,7 @@ include_directories(ggml/include/ggml)
 
 file (GLOB CPP_FILES "src/*.cpp")
 file (GLOB C_FILES "ggml/src/*.c")
-file (GLOB H_FILES "ggml/include/ggml/*.h")
+file (GLOB H_FILES "ggml/include/ggml/*.h" "src/*.h")
 
 # ---------------------------------------------------------------------------------------------
 

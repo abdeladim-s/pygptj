@@ -50,9 +50,7 @@ PYBIND11_MODULE(_pygptj, m) {
         .def_readwrite("temp", &gpt_params::temp)
         .def_readwrite("n_batch", &gpt_params::n_batch)
         .def_readwrite("model", &gpt_params::model)
-//        .def_readwrite("prompt", &gpt_params::prompt)
-        .def_property("prompt", [](gpt_params &self) {return py::str(self.prompt);},
-                                 [](gpt_params &self, py::str &prompt) {self.prompt = prompt.cast<std::string>();})
+        .def_readwrite("prompt", &gpt_params::prompt)
         ;
 
     py::class_<gptj_hparams>(m,"gptj_hparams" /*,py::dynamic_attr()*/)

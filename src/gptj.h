@@ -78,4 +78,4 @@ bool gptj_eval(
               std::vector<float>         & embd_w,
               size_t                     & mem_per_token);
 
-int gptj_generate(gpt_params params, gptj_model model, gpt_vocab vocab,  py::function new_text_callback);
+int gptj_generate(gpt_params params, gptj_model model, gpt_vocab vocab, py::function new_text_callback);
