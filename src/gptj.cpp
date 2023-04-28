@@ -611,16 +611,6 @@ int gptj_generate(gpt_params params, struct gptj_model & model, struct gpt_vocab
     printf("%s: seed = %d\n", __func__, params.seed);
 
     std::mt19937 rng(params.seed);
-//    if (params.prompt.empty()) {
-//        if( !isatty(STDIN_FILENO) ){
-//            std::string line;
-//            while( std::getline(std::cin, line) ){
-//                params.prompt = params.prompt + "\n" + line;
-//            }
-//        } else {
-//            params.prompt = gpt_random_prompt(rng);
-//        }
-//    }
 
     int64_t t_load_us = 0;
 
@@ -728,8 +718,6 @@ int gptj_generate(gpt_params params, struct gptj_model & model, struct gpt_vocab
         printf("%s:  predict time = %8.2f ms / %.2f ms per token\n", __func__, t_predict_us/1000.0f, t_predict_us/1000.0f/n_past);
         printf("%s:    total time = %8.2f ms\n", __func__, (t_main_end_us - t_main_start_us)/1000.0f);
     }
-
-    ggml_free(model.ctx);
 
     return 0;
 }
