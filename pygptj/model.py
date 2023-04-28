@@ -17,6 +17,7 @@ __license__ = "MIT"
 import logging
 import _pygptj as pp
 from pygptj._logger import set_log_level
+import numpy as np
 
 
 class Model:
@@ -35,6 +36,7 @@ class Model:
     ```
     """
     _new_text_callback = None
+    _logits_callback = None
 
     def __init__(self,
                  model_path: str,
@@ -62,6 +64,8 @@ class Model:
         self.gpt_params = pp.gptj_gpt_params()
 
         self.res = ""
+
+        self.logits = []
 
     def _load_model(self):
         """
@@ -107,10 +111,24 @@ class Model:
             except UnicodeDecodeError:
                 logging.warning(f"UnicodeDecodeError of bytes {text_bytes}")
         # save res
+    
+    def _call_logits_callback(self, logits: np.ndarray):
+        """
+        Internal logits_callback that saves the logit representation at each token.
+        :return: None
+        """
+        self.logits.append(logits.tolist())
+        
+        if Model._logits_callback is not None:
+            Model._logits_callback(logits)
+            
+    def braindump(self, path: str):
+        np.save(path, np.asarray(self.logits))
 
     def generate(self,
                  prompt: str,
                  new_text_callback: Callable[[str], None] = None,
+                 logits_callback: Callable = None,
                  n_predict: int = 128,
                  seed: int = -1,
                  n_threads: int = 4,
@@ -147,8 +165,11 @@ class Model:
         self.res = ""
         Model._new_text_callback = new_text_callback
 
+        # assign _logits_callback used for saving logits, token by token
+        Model._logits_callback = logits_callback
+
         # run the prediction
-        pp.gptj_generate(self.gpt_params, self._model, self._vocab, self._call_new_text_callback)
+        pp.gptj_generate(self.gpt_params, self._model, self._vocab, self._call_new_text_callback, self._call_logits_callback)
         return self.res
 
     @staticmethod
