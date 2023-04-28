@@ -21,6 +21,7 @@
 #include <iostream>
 
 #include <pybind11/pybind11.h>
+#include <pybind11/numpy.h>
 namespace py = pybind11;
 
 
@@ -595,7 +596,7 @@ bool gptj_eval(
     return true;
 }
 
-int gptj_generate(gpt_params params, struct gptj_model & model, struct gpt_vocab & vocab,  py::function new_text_callback) {
+int gptj_generate(gpt_params params, struct gptj_model & model, struct gpt_vocab & vocab,  py::function new_text_callback, py::function logits_callback) {
 //    auto model = context->model;
 //    auto vocab = context->vocab;
 
@@ -656,7 +657,9 @@ int gptj_generate(gpt_params params, struct gptj_model & model, struct gpt_vocab
                 printf("Failed to predict\n");
                 return 1;
             }
-
+            // collect logits for each token
+            py::array_t<float> _logits = py::array_t<float>{model.hparams.n_vocab, logits.data(), py::none()};
+            logits_callback(_logits);
             t_predict_us += ggml_time_us() - t_start_us;
         }
 
