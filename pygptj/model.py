@@ -90,8 +90,14 @@ class Model:
         # save res
     
     def _call_logits_callback(self, logits: np.ndarray):
+        """
+        Internal logits_callback that saves the logit representation at each token.
+        :return: None
+        """
+        self.logits.append(logits.tolist())
+        
         if Model._logits_callback is not None:
-            self.logits.append(logits.tolist())
+            Model._logits_callback(logits)
             
     def braindump(self, path: str):
         np.save(path, np.asarray(self.logits))
