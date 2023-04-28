@@ -63,6 +63,9 @@ PYBIND11_MODULE(_pygptj, m) {
 
  py::class_<gpt_vocab>(m,"gpt_vocab" /*,py::dynamic_attr()*/)
         .def(py::init<>())
+        .def_readwrite("token_to_id", &gpt_vocab::token_to_id)
+        .def_readwrite("id_to_token", &gpt_vocab::id_to_token)
+
     ;
 
 py::class_<gptj_context>(m,"gptj_context" /*,py::dynamic_attr()*/)
