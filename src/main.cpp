@@ -72,12 +72,12 @@ py::class_<gptj_context>(m,"gptj_context" /*,py::dynamic_attr()*/)
 ;
 
     m.def("gptj_model_load", &gptj_model_load);
-    m.def("gptj_load_model_ctx", &gptj_load_model_ctx);
 
     m.def("gptj_eval", &gptj_eval);
     m.def("gptj_free", &gptj_free);
     m.def("gpt_sample_top_k_top_p", &gpt_sample_top_k_top_p);
     m.def("gpt_tokenize", &gpt_tokenize);
+    m.def("gpt_vocab_init", &gpt_vocab_init);
 
     m.def("gptj_generate", &gptj_generate);
 

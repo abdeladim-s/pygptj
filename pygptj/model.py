@@ -15,7 +15,6 @@ __copyright__ = "Copyright 2023, "
 __license__ = "MIT"
 
 import logging
-import sys
 import _pygptj as pp
 from pygptj._logger import set_log_level
 
@@ -69,7 +68,31 @@ class Model:
         Helper function to load the model
         """
         pp.gptj_model_load(self.model_path, self._model, self._vocab)
+        # fix UnicodeDecode errors
+        vocab = self._load_vocab()
+        self._vocab.token_to_id = vocab[0]
+        self._vocab.id_to_token = vocab[1]
 
+    def _load_vocab(self):
+        """
+        Reloads the vocab to fix UnicodeDecode errors
+        """
+        token_to_id = {}
+        id_to_token = {}
+
+        with open(self.model_path, "rb") as fin:
+            skip_bytes = 4 * 8
+            fin.read(skip_bytes)
+            n_vocab_bytes = fin.read(4)
+            n_vocab = int.from_bytes(n_vocab_bytes, byteorder='little')
+            for i in range(n_vocab):
+                len_bytes = fin.read(4)
+                len_word = int.from_bytes(len_bytes, byteorder='little')
+                word = fin.read(len_word).decode('utf-8', errors='ignore')  # ignore non unicode chars
+                token_to_id[word] = i
+                id_to_token[i] = word
+
+        return token_to_id, id_to_token
 
     def _call_new_text_callback(self, text_bytes) -> None:
         """

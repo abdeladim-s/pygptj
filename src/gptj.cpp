@@ -342,17 +342,6 @@ bool gptj_model_load(const std::string & fname, struct gptj_model & model, struc
     return true;
 }
 
-struct gptj_context gptj_load_model_ctx(const std::string & fname) {
-    struct gptj_context context;
-    auto model = context.model;
-    auto vocab = context.vocab;
-    if(gptj_model_load(fname, model, vocab)){
-        return context;
-    }
-    else{
-        fprintf(stderr, "%s: failed to load model from '%s'\n", __func__, fname.c_str());
-    }
-}
 
 void gptj_free(struct gptj_model * model){
     ggml_free(model->ctx);

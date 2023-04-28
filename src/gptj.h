@@ -73,7 +73,6 @@ struct gptj_context {
 
 bool gptj_model_load(const std::string & fname,  struct gptj_model & model, struct gpt_vocab & vocab);
 
-struct gptj_context gptj_load_model_ctx(const std::string & fname);
 
 void gptj_free(struct gptj_model * model);
 
