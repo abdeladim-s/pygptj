@@ -22,7 +22,7 @@
 // CLI argument parsing
 //
 
-struct gpt_params {
+struct gptj_gpt_params {
     int32_t seed      = -1; // RNG seed
     int32_t n_threads = std::min(4, (int32_t) std::thread::hardware_concurrency());
     int32_t n_predict = 200; // new tokens to predict
@@ -38,9 +38,9 @@ struct gpt_params {
     std::string prompt;
 };
 
-bool gpt_params_parse(int argc, char ** argv, gpt_params & params);
+bool gpt_params_parse(int argc, char ** argv, gptj_gpt_params & params);
 
-void gpt_print_usage(int argc, char ** argv, const gpt_params & params);
+void gpt_print_usage(int argc, char ** argv, const gptj_gpt_params & params);
 
 std::string gpt_random_prompt(std::mt19937 & rng);
 

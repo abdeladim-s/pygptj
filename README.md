@@ -103,7 +103,7 @@ while True:
     break
 ```
 
-[//]: # (* You can always refer to the [short documentation]&#40;https://nomic-ai.github.io/pyllamacpp/&#41; for more details.)
+* You can always refer to the [short documentation](https://nomic-ai.github.io/pygptj/) for more details.
 
 
 # API reference

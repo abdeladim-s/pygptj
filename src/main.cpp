@@ -74,17 +74,17 @@ PYBIND11_MODULE(_pygptj, m) {
 
     )pbdoc";
 
-    py::class_<gpt_params>(m,"gptj_gpt_params" /*,py::dynamic_attr()*/)
+    py::class_<gptj_gpt_params>(m,"gptj_gpt_params" /*,py::dynamic_attr()*/)
         .def(py::init<>())
-        .def_readwrite("seed", &gpt_params::seed)
-        .def_readwrite("n_threads", &gpt_params::n_threads)
-        .def_readwrite("n_predict", &gpt_params::n_predict)
-        .def_readwrite("top_k", &gpt_params::top_k)
-        .def_readwrite("top_p", &gpt_params::top_p)
-        .def_readwrite("temp", &gpt_params::temp)
-        .def_readwrite("n_batch", &gpt_params::n_batch)
-        .def_readwrite("model", &gpt_params::model)
-        .def_readwrite("prompt", &gpt_params::prompt)
+        .def_readwrite("seed", &gptj_gpt_params::seed)
+        .def_readwrite("n_threads", &gptj_gpt_params::n_threads)
+        .def_readwrite("n_predict", &gptj_gpt_params::n_predict)
+        .def_readwrite("top_k", &gptj_gpt_params::top_k)
+        .def_readwrite("top_p", &gptj_gpt_params::top_p)
+        .def_readwrite("temp", &gptj_gpt_params::temp)
+        .def_readwrite("n_batch", &gptj_gpt_params::n_batch)
+        .def_readwrite("model", &gptj_gpt_params::model)
+        .def_readwrite("prompt", &gptj_gpt_params::prompt)
         ;
 
     py::class_<gptj_hparams>(m,"gptj_hparams" /*,py::dynamic_attr()*/)

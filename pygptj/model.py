@@ -45,13 +45,13 @@ class Model:
                  prompt_context: str = '',
                  prompt_prefix: str = '',
                  prompt_suffix: str = '',
-                 log_level: int = logging.INFO):
+                 log_level: int = logging.ERROR):
         """
         :param model_path: The path to a gpt-j `ggml` model
         :param prompt_context: the global context of the interaction
         :param prompt_prefix: the prompt prefix
         :param prompt_suffix: the prompt suffix
-        :param log_level: logging level, set to INFO by default
+        :param log_level: logging level
         """
         # set logging level
         set_log_level(log_level)

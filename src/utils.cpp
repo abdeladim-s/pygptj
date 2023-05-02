@@ -12,7 +12,7 @@
 #include <fstream>
 #include <regex>
 
-bool gpt_params_parse(int argc, char ** argv, gpt_params & params) {
+bool gpt_params_parse(int argc, char ** argv, gptj_gpt_params & params) {
     for (int i = 1; i < argc; i++) {
         std::string arg = argv[i];
 
@@ -47,7 +47,7 @@ bool gpt_params_parse(int argc, char ** argv, gpt_params & params) {
     return true;
 }
 
-void gpt_print_usage(int argc, char ** argv, const gpt_params & params) {
+void gpt_print_usage(int argc, char ** argv, const gptj_gpt_params & params) {
     fprintf(stderr, "usage: %s [options]\n", argv[0]);
     fprintf(stderr, "\n");
     fprintf(stderr, "options:\n");

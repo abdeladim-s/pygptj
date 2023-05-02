@@ -587,7 +587,7 @@ bool gptj_eval(
     return true;
 }
 
-int gptj_generate(gpt_params params, struct gptj_model & model, struct gpt_vocab & vocab,  py::function new_text_callback, py::function logits_callback) {
+int gptj_generate(gptj_gpt_params params, struct gptj_model & model, struct gpt_vocab & vocab,  py::function new_text_callback, py::function logits_callback) {
 //    auto model = context->model;
 //    auto vocab = context->vocab;
 
