@@ -1,15 +1,19 @@
 # PyGPT-J
-Official supported Python bindings for [GPT4All-J](https://github.com/nomic-ai/gpt4all#raw-model) language model based on [ggml](https://github.com/ggerganov/ggml).
+* Python bindings for GPT-J  [ggml](https://github.com/ggerganov/ggml) language models.
+* Almost the same API as [pyllamacpp](https://github.com/abdeladim-s/pyllamacpp).
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-
-[//]: # ([![PyPi version]&#40;https://badgen.net/pypi/v/pyllamacpp&#41;]&#40;https://pypi.org/project/pyllamacpp/&#41;)
+[![PyPi version](https://badgen.net/pypi/v/pygptj)](https://pypi.org/project/pygptj/)
 
 # Table of contents
 <!-- TOC -->
 * [Installation](#installation)
-* [Usage](#usage)
-* [GPT4All-J](#gpt4all-j)
+* [CLI](#cli)
+* [Tutorial](#tutorial)
+    * [Quick start](#quick-start)
+    * [Interactive Dialogue](#interactive-dialogue)
+    * [Attribute a persona to the language model](#attribute-a-persona-to-the-language-model)
+* [API reference](#api-reference)
 * [License](#license)
 <!-- TOC -->
 
@@ -19,44 +23,91 @@ Official supported Python bindings for [GPT4All-J](https://github.com/nomic-ai/g
 pip install pygptj
 ```
 
-2. Build it from source:
+2. Build from source:
 
 ```shell
-git clone --recursive https://github.com/abdeladim-s/pygptj && cd pygptj
-pip install .
+git clone git+https://github.com/abdeladim-s/pygptj.git
 ```
 
-# Usage
+# CLI 
+
+You can run the following simple command line interface to test the package once it is installed:
+
+```shell
+pygtj path/to/ggml/model
+```
+
+# Tutorial
+
+### Quick start
 
 ```python
 from pygptj.model import Model
 
- def new_text_callback(text):
-        print(text, end="")
-
-model = Model('./models/ggml-gpt4all-j.bin')
-model.generate("Once upon a time, ", n_predict=55, new_text_callback=new_text_callback)
+model = Model(model_path='path/to/gptj/ggml/model')
+for token in model.generate("Tell me a joke ?"):
+    print(token, end='', flush=True)
 ```
-If you don't want to use the `callback`, you can get the results from the `generate` method once the inference is finished:
+
+### Interactive Dialogue
+You can set up an interactive dialogue by simply keeping the `model` variable alive:
 
 ```python
-generated_text = model.generate("Once upon a time, ", n_predict=55)
-print(generated_text)
+from pygptj.model import Model
+
+model = Model(model_path='/path/to/ggml/model')
+while True:
+    try:
+        prompt = input("You: ", flush=True)
+        if prompt == '':
+            continue
+        print(f"AI:", end='')
+        for token in model.generate(prompt):
+            print(f"{token}", end='', flush=True)
+        print()
+    except KeyboardInterrupt:
+        break
+```
+### Attribute a persona to the language model
+
+The following is an example showing how to _"attribute a persona to the language model"_ :
+
+```python
+from pygptj.model import Model
+
+prompt_context = """Act as Bob. Bob is helpful, kind, honest,
+and never fails to answer the User's requests immediately and with precision. 
+
+User: Nice to meet you Bob!
+Bob: Welcome! I'm here to assist you with anything you need. What can I do for you today?
+"""
+
+prompt_prefix = "\nUser:"
+prompt_suffix = "\nBob:"
+
+model = Model(model_path='/path/to/ggml/model',
+              prompt_context=prompt_context,
+              prompt_prefix=prompt_prefix,
+              prompt_suffix=prompt_suffix)
+
+while True:
+  try:
+    prompt = input("User: ")
+    if prompt == '':
+      continue
+    print(f"Bob: ", end='')
+    for token in model.generate(prompt, antiprompt='User:'):
+      print(f"{token}", end='', flush=True)
+      print()
+  except KeyboardInterrupt:
+    break
 ```
 
 [//]: # (* You can always refer to the [short documentation]&#40;https://nomic-ai.github.io/pyllamacpp/&#41; for more details.)
 
 
-# GPT4All-J Model
-
-Download the [GPT4All-J model](https://gpt4all.io/models/ggml-gpt4all-j.bin).
-
-[//]: # (# Discussions and contributions)
-
-[//]: # (If you find any bug, please open an [issue]&#40;https://github.com/nomic-ai/pyllamacpp/issues&#41;.)
-
-[//]: # ()
-[//]: # (If you have any feedback, or you want to share how you are using this project, feel free to use the [Discussions]&#40;https://github.com/nomic-ai/pyllamacpp/discussions&#41; and open a new topic.)
+# API reference
+You can check the [API reference documentation](https://abdeladim-s.github.io/pygptj/) for more details.
 
 # License
 

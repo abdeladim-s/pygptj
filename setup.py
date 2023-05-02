@@ -131,7 +131,7 @@ long_description = (this_directory / "README.md").read_text()
 # logic and declaration, and simpler if you include description/version in a file.
 setup(
     name="pygptj",
-    version="1.0.10",
+    version="2.0.0",
     author="Abdeladim Sadiki",
     description="Python bindings for the GGML GPT-J Laguage model",
     long_description=long_description,
@@ -144,15 +144,14 @@ setup(
     package_dir={'': '.'},
     long_description_content_type="text/markdown",
     license='MIT',
-    # entry_points={
-    #     'console_scripts': ['pyllamacpp-webui=pyllamacpp.webui:run',
-    #                         'pyllamacpp-convert-gpt4all=pyllamacpp.scripts.convert_gpt4all:main']
-    # },
-    # project_urls={
-    #     'Documentation': 'https://nomic-ai.github.io/pyllamacpp',
-    #     'Source': 'https://github.com/nomic-ai/pyllamacpp',
-    #     'Tracker': 'https://github.com/nomic-ai/pyllamacpp/issues',
-    # },
+    entry_points={
+        'console_scripts': ['pygptj=pygptj.cli:main']
+    },
+    project_urls={
+        'Documentation': 'https://abdeladim-s.github.io/pygptj',
+        'Source': 'https://github.com/abdeladim-s/pygptj',
+        'Tracker': 'https://github.com/abdeladim-s/pygptj/issues',
+    },
     # install_requires=[],
     # extras_require={"all": ["streamlit", "streamlit-ace", "sentencepiece", "torch"]},
 )

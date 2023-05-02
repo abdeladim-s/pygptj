@@ -15,6 +15,8 @@
 #include <pybind11/numpy.h>
 #include <map>
 
+//PYBIND11_MAKE_OPAQUE(std::vector<float>);
+
 #include "utils.h"
 #include "gptj.h"
 #include "main.h"
@@ -27,6 +29,37 @@
 
 namespace py = pybind11;
 using namespace pybind11::literals; // to bring in the `_a` literal
+
+gpt_vocab::id gpt_sample_top_k_top_p_wrapper(
+        const gpt_vocab & vocab,
+        py::array_t<float> logits,
+        int    top_k,
+        double top_p,
+        double temp,
+        int seed){
+
+    py::buffer_info buf1 = logits.request();
+    auto *logits_ptr = static_cast<float *>(buf1.ptr);
+    std::mt19937 rng(seed);
+
+    return gpt_sample_top_k_top_p(vocab, logits_ptr, top_k, top_p, temp, rng);
+}
+
+py::tuple gptj_eval_wrapper(
+        const gptj_model & model,
+        const int n_threads,
+        const int n_past,
+        const std::vector<gpt_vocab::id> & embd_inp,
+        size_t mem_per_token){
+
+    std::vector<float> embd_w;
+    size_t mpt = mem_per_token;
+    auto res = gptj_eval(model, n_threads, n_past, embd_inp, embd_w, mpt);
+
+    py::tuple tup = py::make_tuple(embd_w, mpt);
+    return tup;
+}
+
 
 
 PYBIND11_MODULE(_pygptj, m) {
@@ -56,6 +89,13 @@ PYBIND11_MODULE(_pygptj, m) {
 
     py::class_<gptj_hparams>(m,"gptj_hparams" /*,py::dynamic_attr()*/)
         .def(py::init<>())
+        .def_readwrite("n_vocab", &gptj_hparams::n_vocab)
+        .def_readwrite("n_ctx", &gptj_hparams::n_ctx)
+        .def_readwrite("n_embd", &gptj_hparams::n_embd)
+        .def_readwrite("n_head", &gptj_hparams::n_head)
+        .def_readwrite("n_layer", &gptj_hparams::n_layer)
+        .def_readwrite("n_rot", &gptj_hparams::n_rot)
+        .def_readwrite("f16", &gptj_hparams::f16)
         ;
     py::class_<gptj_model>(m,"gptj_model" /*,py::dynamic_attr()*/)
         .def(py::init<>())
@@ -73,9 +113,9 @@ py::class_<gptj_context>(m,"gptj_context" /*,py::dynamic_attr()*/)
 
     m.def("gptj_model_load", &gptj_model_load);
 
-    m.def("gptj_eval", &gptj_eval);
+    m.def("gptj_eval", &gptj_eval_wrapper);
     m.def("gptj_free", &gptj_free);
-    m.def("gpt_sample_top_k_top_p", &gpt_sample_top_k_top_p);
+    m.def("gpt_sample_top_k_top_p", &gpt_sample_top_k_top_p_wrapper);
     m.def("gpt_tokenize", &gpt_tokenize);
     m.def("gpt_vocab_init", &gpt_vocab_init);
 
