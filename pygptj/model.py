@@ -19,7 +19,7 @@ __license__ = "MIT"
 import logging
 import _pygptj as pp
 from pygptj._logger import set_log_level
-
+import numpy as np
 
 class Model:
     """
@@ -303,10 +303,6 @@ class Model:
         :param path: Output path
         :return: None
         """
-        try:
-            import numpy as np
-        except ImportError:
-            raise Exception("Numpy is not installed! please try to install numpy first: pip install numpy")
         np.save(path, np.asarray(self.logits))
 
     def reset(self) -> None:
