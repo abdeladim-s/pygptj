@@ -152,6 +152,6 @@ setup(
         'Source': 'https://github.com/abdeladim-s/pygptj',
         'Tracker': 'https://github.com/abdeladim-s/pygptj/issues',
     },
-    # install_requires=[],
+    install_requires=['numpy'],
     # extras_require={[]},
 )
